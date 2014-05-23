@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Cocoprint</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="aviary_button">Send to aviary</string>
+    <string name="select_image_button">Select Image</string>
+    <string name="title_activity_instagram_connector">InstagramConnector</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_instagram_login">InstagramLogin</string>
+    
+    <string name="menu_settings">Settings</string>
+    <string name="login">Login To Instagram</string>
+    <string name="instagram_id">5cf211515a154805b12d27efb8badbb0</string>
+    <string name="instagram_secret">0b4f8bf21039488aa76073204bf43a87</string>
+    <string name="callbackurl">http://198.199.127.45/instagram</string>
+
+</resources>

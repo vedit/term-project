@@ -1,0 +1,397 @@
+package com.himenu.cocoprint;
+
+import java.util.Locale;
+
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.app.Activity;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.aviary.android.feather.FeatherActivity;
+import com.aviary.android.feather.library.Constants;
+
+
+public class MainActivity extends ActionBarActivity implements
+		NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+	/**
+	 * Fragment managing the behaviors, interactions and presentation of the
+	 * navigation drawer.
+	 */
+	private NavigationDrawerFragment mNavigationDrawerFragment;
+	SectionsPagerAdapter mSectionsPagerAdapter;
+
+	/**
+	 * The {@link ViewPager} that will host the section contents.
+	 */
+	ViewPager mViewPager;
+	// Instagram Values
+	private static final String CLIENT_ID = "5cf211515a154805b12d27efb8badbb0";
+	private static final String CLIENT_SECRET = "0b4f8bf21039488aa76073204bf43a87";
+	private static final String AUTHURL = "https://api.instagram.com/oauth/authorize/";
+	private static final String TOKENURL = "https://api.instagram.com/oauth/access_token";
+	public static final String APIURL = "https://api.instagram.com/v1";
+	public static String CALLBACKURL = "http://198.199.127.45/instagram";
+
+	public static String authURLString = AUTHURL
+			+ "?client_id="
+			+ CLIENT_ID
+			+ "&redirect_uri="
+			+ CALLBACKURL
+			+ "&response_type=code&display=touch&scope=likes+comments+relationships";
+	public static String tokenURLString = TOKENURL + "?client_id=" + CLIENT_ID
+			+ "&client_secret=" + CLIENT_SECRET + "&redirect_uri="
+			+ CALLBACKURL + "&grant_type=authorization_code";
+
+	private static final int SELECT_PICTURE = 666;
+	private static final int AVIARY_PICTURE = 777;
+	private static ImageView selectedImage;
+	private static Uri selectedImageUri;
+	private static Context _appContext;
+	/**
+	 * Used to store the last screen title. For use in
+	 * {@link #restoreActionBar()}.
+	 */
+	private CharSequence mTitle;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		_appContext = this;
+       
+		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.navigation_drawer);
+		mTitle = getTitle();
+
+		// Set up the drawer.
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+				(DrawerLayout) findViewById(R.id.drawer_layout));
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+
+		// Set up the ViewPager with the sections adapter.
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+
+	}
+
+	@Override
+	public void onNavigationDrawerItemSelected(int position) {
+		// update the main content by replacing fragments
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		if(position == 0){
+			PictureFragment pictureFragment = new PictureFragment();
+			ft.replace(R.id.container,pictureFragment);		
+		} else if(position == 1){
+			SettingsFragment settingsFragment = new SettingsFragment();
+			ft.replace(R.id.container,settingsFragment);			
+		} else if (position == 2){
+			FooFragment fooFragment = new FooFragment();
+			ft.replace(R.id.container,fooFragment);	
+		}
+
+		ft.commit();
+	}
+
+	public void onSectionAttached(int number) {
+		switch (number) {
+		case 1:
+			mTitle = getString(R.string.title_section1);
+			break;
+		case 2:
+			mTitle = getString(R.string.title_section2);
+			break;
+		case 3:
+			mTitle = getString(R.string.title_section3);
+			break;
+		}
+	}
+
+	public void restoreActionBar() {
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setTitle(mTitle);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if (!mNavigationDrawerFragment.isDrawerOpen()) {
+			// Only show items in the action bar relevant to this screen
+			// if the drawer is not showing. Otherwise, let the drawer
+			// decide what to show in the action bar.
+			getMenuInflater().inflate(R.menu.main, menu);
+			restoreActionBar();
+			return true;
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	public static Context getAppContext() {
+		return _appContext;
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			Log.e("SELEEEECT", requestCode + "");
+			switch (requestCode) {
+			case 131738:
+				selectedImageUri = data.getData();
+				replacePicture(selectedImageUri);
+				break;
+			case 131849:
+				// output image path
+				Uri mImageUri = data.getData();
+				Log.e("AVIARYPIC", getPath(mImageUri));
+				replacePicture(mImageUri);
+				Bundle extra = data.getExtras();
+				if (null != extra) {
+					// image has been changed by the user?
+					boolean changed = extra
+							.getBoolean(Constants.EXTRA_OUT_BITMAP_CHANGED);
+				}
+				break;
+			}
+		}
+	}
+
+	public void replacePicture(Uri imageUri) {
+		String selectedImagePath = getPath(imageUri);
+		Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
+		selectedImage.setImageBitmap(bitmap);
+	}
+
+	public String getPath(Uri uri) {
+		if (uri == null) {
+			return null;
+		}
+		String[] projection = { MediaStore.Images.Media.DATA };
+		Cursor cursor = managedQuery(uri, projection, null, null, null);
+		if (cursor != null) {
+			int column_index = cursor
+					.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
+			return cursor.getString(column_index);
+		}
+		return uri.getPath();
+	}
+
+
+
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PictureFragment extends Fragment {
+
+		public PictureFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main, container,
+					false);
+			TextView textView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			Button select_image = (Button) rootView
+					.findViewById(R.id.select_image);
+			Button get_aviary = (Button) rootView.findViewById(R.id.get_aviary);
+			Button get_instagram = (Button) rootView
+					.findViewById(R.id.login_instagram);
+
+			selectedImage = (ImageView) rootView
+					.findViewById(R.id.current_image);
+			select_image.setOnClickListener(imageSelector);
+			get_aviary.setOnClickListener(aviaryGetter);
+			get_instagram.setOnClickListener(instagramClientListener);
+			return rootView;
+		}
+
+		View.OnClickListener instagramClientListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				WebView webView = new WebView(getAppContext());
+				webView.setVerticalScrollBarEnabled(false);
+				webView.setHorizontalScrollBarEnabled(false);
+				webView.setWebViewClient(new WebViewClient());
+				webView.getSettings().setJavaScriptEnabled(true);
+				webView.loadUrl(authURLString);
+
+			}
+		};
+
+		View.OnClickListener aviaryGetter = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getAppContext(),
+						FeatherActivity.class);
+				intent.setData(selectedImageUri);
+				intent.putExtra(Constants.EXTRA_IN_API_KEY_SECRET,
+						"98b2bc152b0bb064");
+				startActivityForResult(intent, AVIARY_PICTURE);
+
+			}
+		};
+
+		View.OnClickListener imageSelector = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setType("image/*");
+				intent.setAction(Intent.ACTION_GET_CONTENT);
+				startActivityForResult(intent, SELECT_PICTURE);
+			}
+		};
+
+	}
+	
+	public static class SettingsFragment extends Fragment {
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.settings_fragment, container,
+					false);
+			TextView textView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			Button select_image = (Button) rootView
+					.findViewById(R.id.select_image);
+			Button get_aviary = (Button) rootView.findViewById(R.id.get_aviary);
+			Button get_instagram = (Button) rootView
+					.findViewById(R.id.login_instagram);
+
+			return rootView;
+		}
+	}
+	
+	
+	public static class FooFragment extends Fragment {
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.foo_fragment, container,
+					false);
+
+
+			return rootView;
+		}
+	}
+	
+	public static class PlaceholderFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		private static final String ARG_SECTION_NUMBER = "section_number";
+
+		/**
+		 * Returns a new instance of this fragment for the given section number.
+		 */
+		public static PlaceholderFragment newInstance(int sectionNumber) {
+			PlaceholderFragment fragment = new PlaceholderFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
+		}
+
+		public PlaceholderFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main, container,
+					false);
+			TextView textView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			textView.setText(Integer.toString(getArguments().getInt(
+					ARG_SECTION_NUMBER)));
+			return rootView;
+		}
+	}
+	
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+		public SectionsPagerAdapter(android.app.FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public android.app.Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a PlaceholderFragment (defined as a static inner class
+			// below).
+			return PlaceholderFragment.newInstance(position + 1);
+		}
+
+		@Override
+		public int getCount() {
+			// Show 3 total pages.
+			return 3;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			Locale l = Locale.getDefault();
+			switch (position) {
+			case 0:
+				return getString(R.string.title_section1).toUpperCase(l);
+			case 1:
+				return getString(R.string.title_section2).toUpperCase(l);
+			case 2:
+				return getString(R.string.title_section3).toUpperCase(l);
+			}
+			return null;
+		}
+	}
+
+}
+
