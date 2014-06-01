@@ -1,4 +1,4 @@
-package com.himenu.cocoprint;
+/*package com.himenu.cocoprint;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -35,4 +35,4 @@ public class ResponseListener extends BroadcastReceiver {
 		alertDialog.show();
 //		MainActivity.mInstaImpl.getGallery();
 	}
-}
+}*/

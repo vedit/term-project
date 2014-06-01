@@ -316,9 +316,9 @@ public class InstaImpl {
 
 	public void showResponseDialog(String name, String accessToken) {
 		Intent broadcastIntent = new Intent();
-		broadcastIntent.setAction(ResponseListener.ACTION_RESPONSE);
-		broadcastIntent.putExtra(ResponseListener.EXTRA_NAME, name);
-		broadcastIntent.putExtra(ResponseListener.EXTRA_ACCESS_TOKEN,
+		broadcastIntent.setAction(MainActivity.ResponseListener.ACTION_RESPONSE);
+		broadcastIntent.putExtra(MainActivity.ResponseListener.EXTRA_NAME, name);
+		broadcastIntent.putExtra(MainActivity.ResponseListener.EXTRA_ACCESS_TOKEN,
 				accessToken);
 		mContext.sendBroadcast(broadcastIntent);
 	}

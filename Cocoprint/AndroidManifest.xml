@@ -83,14 +83,21 @@
             </intent-filter>
         </receiver>
 
-<!--         <activity
+        <!--
+             <activity
             android:name="com.himenu.cocoprint.InstaActivity"
             android:label="@string/login"
             android:parentActivityName="com.himenu.cocoprint.MainActivity" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.himenu.cocoprint.MainActivity" />
-        </activity> -->
+        </activity>
+        -->
+        <receiver
+            android:name="MainActivity$ResponseListener" >
+            <action android:name="com.himenu.cocoprint.responselistener" />
+            <category android:name="com.himenu.cocoprint" />
+        </receiver>
     </application>
 
 </manifest>
