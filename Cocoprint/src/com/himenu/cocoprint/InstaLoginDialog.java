@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.CookieManager;
@@ -130,8 +131,18 @@ public class InstaLoginDialog extends Dialog {
 			mAuthDialogListener.onError(description);
 		}
 		
+		
 	}
 	
+	@Override
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+    	Log.e("keydown typee", keyCode + " " + event);   	
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    	InstaImpl.instaLoginDialog.hide();
+	        return true;
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 	public InstaLoginDialog(Context context, String url, AuthDialogListener listener) {
 		super(context);
 		this.url = url;

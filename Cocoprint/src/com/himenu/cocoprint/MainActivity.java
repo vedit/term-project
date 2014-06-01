@@ -43,7 +43,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	// Instagram Values
 
-	private static final int INSTALOGIN = 555;
 	static final int SELECT_PICTURE = 666;
 	static final int AVIARY_PICTURE = 777;
 	static ImageView selectedImage;
@@ -56,7 +55,6 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	private CharSequence mTitle;
 	static InstaImpl mInstaImpl;
-	private ResponseListener mResponseListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +176,7 @@ public class MainActivity extends ActionBarActivity implements
 			return null;
 		}
 		String[] projection = { MediaStore.Images.Media.DATA };
+		@SuppressWarnings("deprecation")
 		Cursor cursor = managedQuery(uri, projection, null, null, null);
 		if (cursor != null) {
 			int column_index = cursor
