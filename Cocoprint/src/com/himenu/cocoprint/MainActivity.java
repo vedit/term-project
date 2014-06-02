@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aviary.android.feather.library.Constants;
 
@@ -82,8 +83,8 @@ public class MainActivity extends ActionBarActivity implements
 			SettingsFragment settingsFragment = new SettingsFragment();
 			ft.replace(R.id.container, settingsFragment);
 		} else if (position == 2) {
-			FooFragment fooFragment = new FooFragment();
-			ft.replace(R.id.container, fooFragment);
+			GalleryFragment galleryFragment = new GalleryFragment();
+			ft.replace(R.id.container, galleryFragment);
 		}
 
 		ft.commit();
@@ -200,24 +201,6 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	public static class FooFragment extends Fragment {
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.foo_fragment, container,
-					false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			Button select_image = (Button) rootView
-					.findViewById(R.id.select_image);
-			Button get_aviary = (Button) rootView.findViewById(R.id.get_aviary);
-			Button get_instagram = (Button) rootView
-					.findViewById(R.id.login_instagram);
-
-			return rootView;
-		}
-	}
-
 	@Override
 	public void onClick(View v) {
 		mInstaImpl = new InstaImpl(getAppContext());
@@ -238,5 +221,28 @@ public class MainActivity extends ActionBarActivity implements
 		unregisterReceiver(mResponseListener);
 		super.onPause();
 	}
-	
+	public class AuthListener implements InstaImpl.AuthAuthenticationListener {
+
+		private final MainActivity mainActivity;
+
+		AuthListener(MainActivity mainActivity) {
+			this.mainActivity = mainActivity;
+		}
+
+		@Override
+		public void onSuccess() {
+			Toast.makeText(this.mainActivity,
+					"Instagram Authorization Successful", Toast.LENGTH_SHORT)
+					.show();
+			InstaImpl.instaLoginDialog.dismiss();
+		}
+
+		@Override
+		public void onFail(String error) {
+			Toast.makeText(this.mainActivity, "Authorization Failed",
+					Toast.LENGTH_SHORT).show();
+			InstaImpl.instaLoginDialog.dismiss();
+
+		}
+	}
 }

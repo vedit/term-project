@@ -39,9 +39,7 @@ public class SessionStore {
 		editor.putString("Api_user_name", username);
 		editor.commit();
 	}
-	
-	//If you have other things saved in SharedPreference, clear things like this.
-	
+		
 	public void resetInstagram()
 	{
 		Editor editor = getSharedPreferences().edit();
@@ -52,9 +50,7 @@ public class SessionStore {
 		editor.remove("Api_email");
 		editor.commit();
 	}
-	
-	//If you have only Instagram value saved in SharedPreference, you can reset using this function as well.
-	
+		
 	public void resetInstagream(){
 		Editor editor = getSharedPreferences().edit();
 		editor.clear();

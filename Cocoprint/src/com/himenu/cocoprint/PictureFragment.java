@@ -30,9 +30,6 @@ public class PictureFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_main, container,
 				false);
 
-		Button get_instagram = (Button) rootView
-				.findViewById(R.id.login_instagram);
-		get_instagram.setOnClickListener((OnClickListener) MainActivity._activity);
 		TextView textView = (TextView) rootView
 				.findViewById(R.id.section_label);
 		Button select_image = (Button) rootView

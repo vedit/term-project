@@ -33,8 +33,7 @@ public class InstaImpl {
 	private static final String AUTHURL = "https://api.instagram.com/oauth/authorize/";
 	public static final String APIURL = "https://api.instagram.com/v1";
 	public static String CALLBACKURL;
-	// private static final String TAG = "Instagram Demo";
-
+	
 	private SessionStore mSessionStore;
 
 	private String mAuthURLString;
@@ -124,30 +123,28 @@ public class InstaImpl {
 
 				outputStreamWriter.flush();
 
-				// Response would be a JSON response sent by instagram
 				String response = streamToString(httpsURLConnection
 						.getInputStream());
 				Log.e("USER Response", response);
 				JSONObject jsonObject = (JSONObject) new JSONTokener(response)
 						.nextValue();
 
-				// Your access token that you can use to make future request
+
 				mAccessTokenString = jsonObject.getString("access_token");
 				// Log.e(TAG, mAccessTokenString);
 
-				// User details like, name, id, tagline, profile pic etc.
+
 				JSONObject userJsonObject = jsonObject.getJSONObject("user");
 				// Log.e("USER DETAIL", userJsonObject.toString());
 
-				// User ID
+
 				String id = userJsonObject.getString("id");
 				// Log.e(TAG, id);
 
-				// Username
 				String username = userJsonObject.getString("username");
 				// Log.e(TAG, username);
 
-				// User full name
+
 				String name = userJsonObject.getString("full_name");
 				// Log.e(TAG, name);
 				mSessionStore.saveInstagramSession(mAccessTokenString, id,
@@ -322,8 +319,6 @@ public class InstaImpl {
 				accessToken);
 		mContext.sendBroadcast(broadcastIntent);
 	}
-	/**
-	 * Background Async Task to download file
-	 * */
+
 	
 }
