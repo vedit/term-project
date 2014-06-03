@@ -282,7 +282,7 @@ public class MainActivity extends ActionBarActivity implements
 		mInstaImpl.setAuthAuthenticationListener(new AuthListener(this));
 	}
 
-	public class ResponseListener extends BroadcastReceiver {
+	public static class ResponseListener extends BroadcastReceiver {
 
 		public static final String ACTION_RESPONSE = "com.himenu.cocoprint.responselistener";
 		public static final String EXTRA_NAME = "90293d69-2eae-4ccd-b36c-a8d0c4c1bec6";
