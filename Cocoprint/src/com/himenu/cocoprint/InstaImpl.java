@@ -15,6 +15,8 @@ import java.net.URLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -186,9 +188,10 @@ public class InstaImpl {
 			try {
 				SessionStore store = new SessionStore(mContext);
 				SharedPreferences prefs = store.getSharedPreferences();
+				InstagramPhotoDao instagramDao = new InstagramPhotoDao(mContext);
 				String mApiURLString = APIURL + "/users/"
 						+ prefs.getString("Api_Id", null)
-						+ "/media/recent?access_token="
+						+ "/media/recent?count=-1&access_token="
 						+ prefs.getString("Api_access_token", null);
 				URL url = new URL(mApiURLString);
 				HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url
@@ -201,11 +204,14 @@ public class InstaImpl {
 					JSONArray data_list = jsonObject.getJSONArray("data");
 					for (int i = 0; i < data_list.length(); i++) {
 						JSONObject data = (JSONObject) data_list.get(i);
-							Log.e("STD", "COMON");
-							JSONObject images = data.getJSONObject("images");
-							JSONObject thumb = images.getJSONObject("thumbnail");
-							JSONObject std = images.getJSONObject("standard_resolution");
-							downloadFile(thumb.getString("url"));
+						Log.e("STD", "COMON");
+						JSONObject images = data.getJSONObject("images");
+						JSONObject thumb = images.getJSONObject("thumbnail");
+						JSONObject std = images
+								.getJSONObject("standard_resolution");
+						instagramDao.createInstagramPhoto(
+								thumb.getString("url"), std.getString("url"));
+						downloadFile(thumb.getString("url"));
 					}
 				}
 			} catch (Exception e) {
@@ -225,47 +231,31 @@ public class InstaImpl {
 		}
 
 	}
-	
-	
-	public void downloadFile (String f_url){
-		
+
+	public void downloadFile(String f_url) {
+
 		try {
 			URL url = new URL(f_url);
-			URLConnection conection = url.openConnection();
-			conection.connect();
-
-			// this will be useful so that you can show a tipical 0-100%
-			// progress bar
-			int lenghtOfFile = conection.getContentLength();
-
-			// download the file
-			InputStream input = new BufferedInputStream(url.openStream(),
-			        8192);
-
-			// Output stream
+			URLConnection connection = url.openConnection();
+			connection.connect();
+			InputStream input = new BufferedInputStream(url.openStream(), 8192);
 			OutputStream output = new FileOutputStream(Environment
-			        .getExternalStorageDirectory().toString()
-			        + "/2011.kml");
+					.getExternalStorageDirectory().toString()
+					+ "/"
+					+ RandomStringUtils.randomAlphanumeric(7) + ".png");
 
-			byte data[] = new byte[1024];
-
-			// flushing output
 			output.flush();
-
-			// closing streams
 			output.close();
 			input.close();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	public void setAuthAuthenticationListener(
 			AuthAuthenticationListener authAuthenticationListener) {
 		this.mAuthAuthenticationListener = authAuthenticationListener;
@@ -316,14 +306,12 @@ public class InstaImpl {
 
 	public void showResponseDialog(String name, String accessToken) {
 		Intent broadcastIntent = new Intent();
-		broadcastIntent.setAction(MainActivity.ResponseListener.ACTION_RESPONSE);
-		broadcastIntent.putExtra(MainActivity.ResponseListener.EXTRA_NAME, name);
-		broadcastIntent.putExtra(MainActivity.ResponseListener.EXTRA_ACCESS_TOKEN,
-				accessToken);
+		broadcastIntent
+				.setAction(MainActivity.ResponseListener.ACTION_RESPONSE);
+		broadcastIntent
+				.putExtra(MainActivity.ResponseListener.EXTRA_NAME, name);
+		broadcastIntent.putExtra(
+				MainActivity.ResponseListener.EXTRA_ACCESS_TOKEN, accessToken);
 		mContext.sendBroadcast(broadcastIntent);
 	}
-	/**
-	 * Background Async Task to download file
-	 * */
-	
 }

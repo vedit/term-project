@@ -1,18 +1,27 @@
 package com.himenu.cocoprint;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,10 +44,6 @@ import com.aviary.android.feather.library.Constants;
 public class MainActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks, OnClickListener {
 
-	/**
-	 * Fragment managing the behaviors, interactions and presentation of the
-	 * navigation drawer.
-	 */
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 
 	// Instagram Values
@@ -49,10 +54,8 @@ public class MainActivity extends ActionBarActivity implements
 	static Uri selectedImageUri;
 	private static Context _appContext;
 	public static Activity _activity;
-	/**
-	 * Used to store the last screen title. For use in
-	 * {@link #restoreActionBar()}.
-	 */
+	private static long albumId;
+	
 	private CharSequence mTitle;
 	static InstaImpl mInstaImpl;
 
@@ -60,16 +63,18 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		SessionStore store = new SessionStore(this);
+		SharedPreferences prefs = store.getSharedPreferences();
+		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
 		_appContext = this;
 		_activity = this;
-		// Set up the drawer.
+		albumId = store.getCurrentAlbum();
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-		
+
 	}
 
 	@Override
@@ -115,9 +120,6 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (!mNavigationDrawerFragment.isDrawerOpen()) {
-			// Only show items in the action bar relevant to this screen
-			// if the drawer is not showing. Otherwise, let the drawer
-			// decide what to show in the action bar.
 			getMenuInflater().inflate(R.menu.main, menu);
 			restoreActionBar();
 			return true;
@@ -127,9 +129,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
@@ -146,13 +145,13 @@ public class MainActivity extends ActionBarActivity implements
 			Log.e("SELEEEECT", requestCode + "");
 			switch (requestCode) {
 			case 131738:
+
 				selectedImageUri = data.getData();
 				replacePicture(selectedImageUri);
 				break;
 			case 131849:
 				// output image path
 				Uri mImageUri = data.getData();
-				Log.e("AVIARYPIC", getPath(mImageUri));
 				replacePicture(mImageUri);
 				Bundle extra = data.getExtras();
 				if (null != extra) {
@@ -165,26 +164,132 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	public void replacePicture(Uri imageUri) {
-		String selectedImagePath = getPath(imageUri);
-		Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
-		selectedImage.setImageBitmap(bitmap);
+	public void replacePicture(Uri uri) {
+		ParcelFileDescriptor parcelFD = null;
+		try {
+			PhotoDao photoDao = new PhotoDao(this);
+			parcelFD = getContentResolver().openFileDescriptor(uri, "r");
+			FileDescriptor imageSource = parcelFD.getFileDescriptor();
+			Log.e("ReplacePic", imageSource.toString());
+			BitmapFactory.Options o = new BitmapFactory.Options();
+			o.inJustDecodeBounds = true;
+			BitmapFactory.decodeFileDescriptor(imageSource, null, o);
+
+			final int REQUIRED_SIZE = 1024;
+
+			int width_tmp = o.outWidth, height_tmp = o.outHeight;
+			int scale = 1;
+			while (true) {
+				if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE) {
+					break;
+				}
+				width_tmp /= 2;
+				height_tmp /= 2;
+				scale *= 2;
+			}
+
+			BitmapFactory.Options o2 = new BitmapFactory.Options();
+			o2.inSampleSize = scale;
+			Bitmap bitmap = BitmapFactory.decodeFileDescriptor(imageSource,
+					null, o2);
+			String imageName = generateFileName(imageSource);
+			savePic(bitmap, imageName);
+			selectedImage.setImageBitmap(bitmap);
+			Log.e("ALBUMID", albumId+"");
+			photoDao.createPhoto(imageName, albumId);
+			List<Photo> a = photoDao.getAllPhotos();
+			for(int i=0; i<a.size(); i++){
+				Log.e("pics", a.get(i).toString());
+			}
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		} finally {
+			if (parcelFD != null)
+				try {
+					parcelFD.close();
+				} catch (IOException e) {
+				}
+		}
 	}
 
-	public String getPath(Uri uri) {
-		if (uri == null) {
-			return null;
+	public String generateMd5(String input) throws Exception{
+		MessageDigest m = MessageDigest.getInstance("MD5");
+		m.reset();
+		m.update(input.getBytes());
+		byte[] digest = m.digest();
+		BigInteger bigInt = new BigInteger(1,digest);
+		String hashtext = bigInt.toString(16);
+		// Now we need to zero pad it if you actually want the full 32 chars.
+		while(hashtext.length() < 32 ){
+		  hashtext = "0"+hashtext;
 		}
-		String[] projection = { MediaStore.Images.Media.DATA };
-		@SuppressWarnings("deprecation")
-		Cursor cursor = managedQuery(uri, projection, null, null, null);
-		if (cursor != null) {
-			int column_index = cursor
-					.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-			cursor.moveToFirst();
-			return cursor.getString(column_index);
+		return hashtext;
+	}
+	
+	public String generateFileName(FileDescriptor fd) {
+		String hashcode = ""+fd.hashCode();
+		String digest = ""+fd.hashCode();
+		try {
+			digest = generateMd5(hashcode);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return uri.getPath();
+		return digest + ".png";
+//		return RandomStringUtils.randomAlphanumeric(10).toUpperCase() + ".png";
+	}
+
+	public void savePic(Bitmap bitmap, String filename) {
+		Log.e("FILENAME", filename);
+		FileOutputStream out = null;
+		try {
+			out = openFileOutput(filename, Context.MODE_PRIVATE);
+			// out = new FileOutputStream(filename);
+			bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				out.close();
+			} catch (Throwable ignore) {
+			}
+		}
+	}
+
+	/* Checks if external storage is available for read and write */
+	public boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
+	/* Checks if external storage is available to at least read */
+	public boolean isExternalStorageReadable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)
+				|| Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean createDirIfNotExists(String path) {
+		boolean ret = true;
+		if (isExternalStorageWritable()) {
+			File file = new File(Environment.getExternalStorageDirectory(),
+					path);
+			if (!file.exists()) {
+				if (!file.mkdirs()) {
+					Log.e("TravellerLog :: ", "Problem creating Image folder");
+					ret = false;
+				}
+			}
+		} else {
+			ret = false;
+		}
+		return ret;
 	}
 
 	public static class SettingsFragment extends Fragment {
@@ -253,7 +358,7 @@ public class MainActivity extends ActionBarActivity implements
 						}
 					});
 			alertDialog.show();
-//			MainActivity.mInstaImpl.getGallery();
+			// MainActivity.mInstaImpl.getGallery();
 		}
 	}
 }

@@ -8,6 +8,7 @@ public class SessionStore {
 	
 	private static final String FILE_NAME = "InstaSessionStore";
 	private static final String ACCESS_TOKEN_KEY = "Access_Token";
+	private static final String CURRENT_ALBUM = "Current_Photo_Album";
 	private static Context mContext;
 	
 	public SessionStore(Context context)
@@ -18,6 +19,16 @@ public class SessionStore {
 	public SharedPreferences getSharedPreferences()
 	{
 		return mContext.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+	}
+	
+	public void saveAlbumId(){
+		Editor editor = getSharedPreferences().edit();
+		editor.putLong(CURRENT_ALBUM, getCurrentAlbum() + 1);
+		editor.commit();	
+	}
+	
+	public long getCurrentAlbum(){
+		return getSharedPreferences().getLong(CURRENT_ALBUM, 0);
 	}
 	
 	public void saveInstaAccessToke(String accessToken) {
@@ -39,9 +50,7 @@ public class SessionStore {
 		editor.putString("Api_user_name", username);
 		editor.commit();
 	}
-	
-	//If you have other things saved in SharedPreference, clear things like this.
-	
+		
 	public void resetInstagram()
 	{
 		Editor editor = getSharedPreferences().edit();
