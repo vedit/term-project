@@ -22,22 +22,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.aviary.android.feather.library.Constants;
 
@@ -55,7 +50,7 @@ public class MainActivity extends ActionBarActivity implements
 	private static Context _appContext;
 	public static Activity _activity;
 	private static long albumId;
-	
+
 	private CharSequence mTitle;
 	static InstaImpl mInstaImpl;
 
@@ -65,7 +60,8 @@ public class MainActivity extends ActionBarActivity implements
 		setContentView(R.layout.activity_main);
 		SessionStore store = new SessionStore(this);
 		SharedPreferences prefs = store.getSharedPreferences();
-		
+		File galleryDirectory = new File("/sdcard/sdcard/CocoPrint/");
+		galleryDirectory.mkdirs();
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
@@ -89,8 +85,8 @@ public class MainActivity extends ActionBarActivity implements
 			SettingsFragment settingsFragment = new SettingsFragment();
 			ft.replace(R.id.container, settingsFragment);
 		} else if (position == 2) {
-			FooFragment fooFragment = new FooFragment();
-			ft.replace(R.id.container, fooFragment);
+			GalleryFragment galleryFragment = new GalleryFragment();
+			ft.replace(R.id.container, galleryFragment);
 		}
 
 		ft.commit();
@@ -195,40 +191,43 @@ public class MainActivity extends ActionBarActivity implements
 			String imageName = generateFileName(imageSource);
 			savePic(bitmap, imageName);
 			selectedImage.setImageBitmap(bitmap);
-			Log.e("ALBUMID", albumId+"");
+			Log.e("ALBUMID", albumId + "");
 			photoDao.createPhoto(imageName, albumId);
 			List<Photo> a = photoDao.getAllPhotos();
-			for(int i=0; i<a.size(); i++){
+			for (int i = 0; i < a.size(); i++) {
 				Log.e("pics", a.get(i).toString());
 			}
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			if (parcelFD != null)
 				try {
 					parcelFD.close();
 				} catch (IOException e) {
+					e.printStackTrace();
 				}
 		}
 	}
 
-	public String generateMd5(String input) throws Exception{
+	public String generateMd5(String input) throws Exception {
 		MessageDigest m = MessageDigest.getInstance("MD5");
 		m.reset();
 		m.update(input.getBytes());
 		byte[] digest = m.digest();
-		BigInteger bigInt = new BigInteger(1,digest);
+		BigInteger bigInt = new BigInteger(1, digest);
 		String hashtext = bigInt.toString(16);
 		// Now we need to zero pad it if you actually want the full 32 chars.
-		while(hashtext.length() < 32 ){
-		  hashtext = "0"+hashtext;
+		while (hashtext.length() < 32) {
+			hashtext = "0" + hashtext;
 		}
 		return hashtext;
 	}
-	
+
 	public String generateFileName(FileDescriptor fd) {
-		String hashcode = ""+fd.hashCode();
-		String digest = ""+fd.hashCode();
+		String hashcode = "" + fd.hashCode();
+		String digest = "" + fd.hashCode();
 		try {
 			digest = generateMd5(hashcode);
 		} catch (Exception e) {
@@ -236,15 +235,17 @@ public class MainActivity extends ActionBarActivity implements
 			e.printStackTrace();
 		}
 		return digest + ".png";
-//		return RandomStringUtils.randomAlphanumeric(10).toUpperCase() + ".png";
+		// return RandomStringUtils.randomAlphanumeric(10).toUpperCase() +
+		// ".png";
 	}
 
 	public void savePic(Bitmap bitmap, String filename) {
 		Log.e("FILENAME", filename);
 		FileOutputStream out = null;
 		try {
-			out = openFileOutput(filename, Context.MODE_PRIVATE);
-			// out = new FileOutputStream(filename);
+			// out = openFileOutput(filename, Context.MODE_PRIVATE);
+			out = new FileOutputStream("/sdcard/sdcard/CocoPrint/gallery/"
+					+ filename);
 			bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -273,57 +274,6 @@ public class MainActivity extends ActionBarActivity implements
 			return true;
 		}
 		return false;
-	}
-
-	public boolean createDirIfNotExists(String path) {
-		boolean ret = true;
-		if (isExternalStorageWritable()) {
-			File file = new File(Environment.getExternalStorageDirectory(),
-					path);
-			if (!file.exists()) {
-				if (!file.mkdirs()) {
-					Log.e("TravellerLog :: ", "Problem creating Image folder");
-					ret = false;
-				}
-			}
-		} else {
-			ret = false;
-		}
-		return ret;
-	}
-
-	public static class SettingsFragment extends Fragment {
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.settings_fragment,
-					container, false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			Button select_image = (Button) rootView
-					.findViewById(R.id.select_image);
-			Button get_aviary = (Button) rootView.findViewById(R.id.get_aviary);
-
-			return rootView;
-		}
-	}
-
-	public static class FooFragment extends Fragment {
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.foo_fragment, container,
-					false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			Button select_image = (Button) rootView
-					.findViewById(R.id.select_image);
-			Button get_aviary = (Button) rootView.findViewById(R.id.get_aviary);
-			Button get_instagram = (Button) rootView
-					.findViewById(R.id.login_instagram);
-
-			return rootView;
-		}
 	}
 
 	@Override

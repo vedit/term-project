@@ -25,7 +25,7 @@ public class DbTools extends SQLiteOpenHelper {
 	public static final String INSTAGRAM_COLUMN_ALBUM = "album_id";
 
 	private static final String DATABASE_NAME = "cocoprint.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	// Database creation sql statement
 	private static final String ALBUM_CREATE = "CREATE TABLE "

@@ -71,7 +71,7 @@ public class AlbumDao {
 	}
 
 	private Album cursorToAlbum(Cursor cursor) {
-		List<ImageMedia> albumContent = null;
+		List<ImageItem> albumContent = null;
 		
 		PhotoDao photoDao = new PhotoDao(MainActivity.getAppContext());
 		InstagramPhotoDao instagramPhotoDao = new InstagramPhotoDao(MainActivity.getAppContext());

@@ -7,7 +7,7 @@ public class Album {
 	private String name;
 	private long created;
 	private long updated;
-    private List<ImageMedia> images; 
+    private List<ImageItem> images; 
     
 	public long getId() {
 		return id;
@@ -45,11 +45,11 @@ public class Album {
 		return name + " " + updated; 
 	}
 
-	public List<ImageMedia> getImages() {
+	public List<ImageItem> getImages() {
 		return images;
 	}
 
-	public void setImages(List<ImageMedia> images) {
+	public void setImages(List<ImageItem> images) {
 		this.images = images;
 	}
 }

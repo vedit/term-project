@@ -77,8 +77,8 @@ public class PhotoDao {
 		return photo;
 	}
 
-	public List<ImageMedia> getAlbumPhotos(long albumId) {
-		List<ImageMedia> photos = new ArrayList<ImageMedia>();
+	public List<ImageItem> getAlbumPhotos(long albumId) {
+		List<ImageItem> photos = new ArrayList<ImageItem>();
 		open();
 		Cursor cursor = database.query(DbTools.PHOTOS_TABLE_NAME, allColumns,
 				DbTools.PHOTOS_COLUMN_ALBUM + "=?", new String[] { albumId + "" },

@@ -1,6 +1,9 @@
 package com.himenu.cocoprint;
 
-public class Photo extends ImageMedia {
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+public class Photo extends ImageItem {
 	private long id;
 	private String uri;
 	private long albumId;
@@ -21,7 +24,7 @@ public class Photo extends ImageMedia {
 		this.uri = uri;
 	}
 
-	public long getAlbum_id() {
+	public long getAlbumId() {
 		return albumId;
 	}
 
@@ -31,5 +34,12 @@ public class Photo extends ImageMedia {
 	
 	public String toString(){
 		return uri + " " + albumId;
+	}
+
+	@Override
+	public Bitmap getBitmap() {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+		return BitmapFactory.decodeFile("/sdcard/sdcard/CocoPrint/gallery/" + uri, options);
 	}
 }

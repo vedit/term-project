@@ -1,6 +1,13 @@
 package com.himenu.cocoprint;
 
-public class InstagramPhoto extends ImageMedia {
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+public class InstagramPhoto extends ImageItem {
 	private long id;
 	private String thumb;
 	private String large;
@@ -36,5 +43,23 @@ public class InstagramPhoto extends ImageMedia {
 
 	public void setAlbumId(long albumId) {
 		this.albumId = albumId;
+	}
+
+	@Override
+	public Bitmap getBitmap() {
+		URL url = null;
+		try {
+			url = new URL(thumb);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			return BitmapFactory.decodeStream(url.openConnection().getInputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;		
 	}
 }

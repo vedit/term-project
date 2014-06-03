@@ -72,6 +72,7 @@ public final class R {
  and a "feather_plugin_border_xxx_name" string label 
          */
         public static final int borders_list=0x7f0d0006;
+        public static final int image_ids=0x7f0d0007;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
@@ -2412,7 +2413,7 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f070002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f08003d;
+        public static final int abc_search_url_text_holo=0x7f08003f;
         public static final int abc_search_url_text_normal=0x7f080000;
         public static final int abc_search_url_text_pressed=0x7f080002;
         public static final int abc_search_url_text_selected=0x7f080001;
@@ -2462,14 +2463,14 @@ containing a value of this type.
         /**  iap dialog main color background 
          */
         public static final int aviary_iap_background=0x7f080026;
-        public static final int aviary_iap_buy_button_text_color=0x7f08003e;
+        public static final int aviary_iap_buy_button_text_color=0x7f080040;
         /**  iap dialog cell layout background 
          */
         public static final int aviary_iap_cell_layout_background=0x7f080025;
         public static final int aviary_iap_link_color_normal=0x7f08001c;
         public static final int aviary_iap_link_color_pressed=0x7f08001e;
         public static final int aviary_iap_link_color_selected=0x7f08001d;
-        public static final int aviary_iap_link_text_color=0x7f08003f;
+        public static final int aviary_iap_link_text_color=0x7f080041;
         public static final int aviary_iap_list_divider=0x7f08001f;
         public static final int aviary_iap_restore_all_button_color=0x7f080020;
         public static final int aviary_iap_workspace_background=0x7f080021;
@@ -2516,13 +2517,15 @@ containing a value of this type.
  highlight drawable background, stroke color 
          */
         public static final int aviary_text_highlight_background_normal=0x7f08003b;
-        public static final int aviary_tool_text_color=0x7f080040;
-        public static final int aviary_tool_text_color_inverted=0x7f080041;
-        public static final int aviary_tool_text_color_no_selected=0x7f080042;
+        public static final int aviary_tool_text_color=0x7f080042;
+        public static final int aviary_tool_text_color_inverted=0x7f080043;
+        public static final int aviary_tool_text_color_no_selected=0x7f080044;
         public static final int aviary_workspace_indicator_normal_endColor=0x7f080015;
         public static final int aviary_workspace_indicator_normal_startColor=0x7f080014;
         public static final int aviary_workspace_indicator_selected_endColor=0x7f080013;
         public static final int aviary_workspace_indicator_selected_startColor=0x7f080012;
+        public static final int blue=0x7f08003d;
+        public static final int white=0x7f08003e;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -3031,11 +3034,21 @@ containing a value of this type.
         public static final int aviary_wheel_shadow=0x7f0200ed;
         public static final int aviary_wheel_shadow_bottom=0x7f0200ee;
         public static final int drawer_shadow=0x7f0200ef;
-        public static final int hlv_overscroll_edge=0x7f0200f0;
-        public static final int hlv_overscroll_glow=0x7f0200f1;
-        public static final int ic_drawer=0x7f0200f2;
-        public static final int ic_launcher=0x7f0200f3;
-        public static final int ic_stickers=0x7f0200f4;
+        public static final int grid_color_selector=0x7f0200f0;
+        public static final int hlv_overscroll_edge=0x7f0200f1;
+        public static final int hlv_overscroll_glow=0x7f0200f2;
+        public static final int ic_drawer=0x7f0200f3;
+        public static final int ic_launcher=0x7f0200f4;
+        public static final int ic_stickers=0x7f0200f5;
+        public static final int image_1=0x7f0200f6;
+        public static final int image_2=0x7f0200f7;
+        public static final int image_3=0x7f0200f8;
+        public static final int image_4=0x7f0200f9;
+        public static final int image_5=0x7f0200fa;
+        public static final int image_6=0x7f0200fb;
+        public static final int image_7=0x7f0200fc;
+        public static final int image_8=0x7f0200fd;
+        public static final int image_9=0x7f0200fe;
     }
     public static final class id {
         public static final int action_bar=0x7f060029;
@@ -3046,11 +3059,11 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f060030;
         public static final int action_bar_title=0x7f06002f;
         public static final int action_context_bar=0x7f06002a;
-        public static final int action_example=0x7f0600b3;
+        public static final int action_example=0x7f0600b4;
         public static final int action_menu_divider=0x7f060016;
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060031;
-        public static final int action_settings=0x7f0600b2;
+        public static final int action_settings=0x7f0600b3;
         public static final int activity_chooser_view_content=0x7f060032;
         public static final int always=0x7f06000b;
         public static final int alwaysScroll=0x7f060026;
@@ -3131,7 +3144,7 @@ containing a value of this type.
         public static final int checked=0x7f06001b;
         public static final int collapseActionView=0x7f06000d;
         public static final int container=0x7f06004b;
-        public static final int current_image=0x7f0600ae;
+        public static final int current_image=0x7f0600af;
         public static final int default_activity_button=0x7f060035;
         public static final int dialog=0x7f06000e;
         public static final int disableHome=0x7f060008;
@@ -3152,6 +3165,7 @@ containing a value of this type.
         public static final int expanded_menu=0x7f060039;
         public static final int feather_dialogs_container=0x7f060085;
         public static final int get_aviary=0x7f0600ad;
+        public static final int gridView=0x7f0600ae;
         public static final int home=0x7f060014;
         public static final int homeAsUp=0x7f060005;
         public static final int horizontal=0x7f060024;
@@ -3163,9 +3177,9 @@ containing a value of this type.
         public static final int imagegl=0x7f060055;
         public static final int listMode=0x7f060001;
         public static final int list_item=0x7f060036;
-        public static final int login_instagram=0x7f0600af;
+        public static final int login_instagram=0x7f0600b0;
         public static final int main_content=0x7f06007f;
-        public static final int menu_settings=0x7f0600b1;
+        public static final int menu_settings=0x7f0600b2;
         public static final int middle=0x7f060012;
         public static final int navbar_button1=0x7f060089;
         public static final int navbar_button2=0x7f06008d;
@@ -3198,7 +3212,7 @@ containing a value of this type.
         public static final int section_label=0x7f0600ab;
         public static final int select_image=0x7f0600ac;
         public static final int selected=0x7f06001c;
-        public static final int shadow=0x7f0600b0;
+        public static final int shadow=0x7f0600b1;
         public static final int shortcut=0x7f06003b;
         public static final int showCustom=0x7f060007;
         public static final int showHome=0x7f060004;
@@ -3479,10 +3493,12 @@ containing a value of this type.
         public static final int aviary_tool_feedback_layout=0x7f030054;
         public static final int aviary_tool_layout=0x7f030055;
         public static final int foo_fragment=0x7f030056;
-        public static final int fragment_main=0x7f030057;
-        public static final int fragment_navigation_drawer=0x7f030058;
-        public static final int settings_fragment=0x7f030059;
-        public static final int support_simple_spinner_dropdown_item=0x7f03005a;
+        public static final int fragment_gallery=0x7f030057;
+        public static final int fragment_main=0x7f030058;
+        public static final int fragment_navigation_drawer=0x7f030059;
+        public static final int row_grid=0x7f03005a;
+        public static final int settings_fragment=0x7f03005b;
+        public static final int support_simple_spinner_dropdown_item=0x7f03005c;
     }
     public static final class menu {
         public static final int activity_insta=0x7f0e0000;

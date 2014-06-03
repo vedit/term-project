@@ -80,8 +80,8 @@ public class InstagramPhotoDao {
 		return instagramPhoto;
 	}
 
-	public List<ImageMedia> getAlbumInstagramPhotos(long albumId) {
-		List<ImageMedia> photos = new ArrayList<ImageMedia>();
+	public List<ImageItem> getAlbumInstagramPhotos(long albumId) {
+		List<ImageItem> photos = new ArrayList<ImageItem>();
 		open();
 		Cursor cursor = database.query(DbTools.INSTAGRAM_TABLE_NAME, allColumns,
 				DbTools.INSTAGRAM_COLUMN_ALBUM + "=?", new String[] { albumId + "" },

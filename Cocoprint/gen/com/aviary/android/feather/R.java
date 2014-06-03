@@ -397,7 +397,7 @@ public final class R {
 		public static final int abc_split_action_bar_is_narrow = 0x7f070002;
 	}
 	public static final class color {
-		public static final int abc_search_url_text_holo = 0x7f08003d;
+		public static final int abc_search_url_text_holo = 0x7f08003f;
 		public static final int abc_search_url_text_normal = 0x7f080000;
 		public static final int abc_search_url_text_pressed = 0x7f080002;
 		public static final int abc_search_url_text_selected = 0x7f080001;
@@ -426,12 +426,12 @@ public final class R {
 		public static final int aviary_hint_foreground_light = 0x7f080008;
 		public static final int aviary_hint_foreground_light_inverted = 0x7f08001b;
 		public static final int aviary_iap_background = 0x7f080026;
-		public static final int aviary_iap_buy_button_text_color = 0x7f08003e;
+		public static final int aviary_iap_buy_button_text_color = 0x7f080040;
 		public static final int aviary_iap_cell_layout_background = 0x7f080025;
 		public static final int aviary_iap_link_color_normal = 0x7f08001c;
 		public static final int aviary_iap_link_color_pressed = 0x7f08001e;
 		public static final int aviary_iap_link_color_selected = 0x7f08001d;
-		public static final int aviary_iap_link_text_color = 0x7f08003f;
+		public static final int aviary_iap_link_text_color = 0x7f080041;
 		public static final int aviary_iap_list_divider = 0x7f08001f;
 		public static final int aviary_iap_restore_all_button_color = 0x7f080020;
 		public static final int aviary_iap_workspace_background = 0x7f080021;
@@ -457,9 +457,9 @@ public final class R {
 		public static final int aviary_primary_highlight_color_muted = 0x7f080010;
 		public static final int aviary_text_highlight_background_inner_pressed = 0x7f08003c;
 		public static final int aviary_text_highlight_background_normal = 0x7f08003b;
-		public static final int aviary_tool_text_color = 0x7f080040;
-		public static final int aviary_tool_text_color_inverted = 0x7f080041;
-		public static final int aviary_tool_text_color_no_selected = 0x7f080042;
+		public static final int aviary_tool_text_color = 0x7f080042;
+		public static final int aviary_tool_text_color_inverted = 0x7f080043;
+		public static final int aviary_tool_text_color_no_selected = 0x7f080044;
 		public static final int aviary_workspace_indicator_normal_endColor = 0x7f080015;
 		public static final int aviary_workspace_indicator_normal_startColor = 0x7f080014;
 		public static final int aviary_workspace_indicator_selected_endColor = 0x7f080013;
@@ -793,9 +793,9 @@ public final class R {
 		public static final int aviary_wheel_line = 0x7f0200ec;
 		public static final int aviary_wheel_shadow = 0x7f0200ed;
 		public static final int aviary_wheel_shadow_bottom = 0x7f0200ee;
-		public static final int hlv_overscroll_edge = 0x7f0200f0;
-		public static final int hlv_overscroll_glow = 0x7f0200f1;
-		public static final int ic_stickers = 0x7f0200f4;
+		public static final int hlv_overscroll_edge = 0x7f0200f1;
+		public static final int hlv_overscroll_glow = 0x7f0200f2;
+		public static final int ic_stickers = 0x7f0200f5;
 	}
 	public static final class id {
 		public static final int action_bar = 0x7f060029;
@@ -947,7 +947,7 @@ public final class R {
 		public static final int search_src_text = 0x7f060044;
 		public static final int search_voice_btn = 0x7f060048;
 		public static final int selected = 0x7f06001c;
-		public static final int shadow = 0x7f0600b0;
+		public static final int shadow = 0x7f0600b1;
 		public static final int shortcut = 0x7f06003b;
 		public static final int showCustom = 0x7f060007;
 		public static final int showHome = 0x7f060004;
@@ -1099,7 +1099,7 @@ public final class R {
 		public static final int aviary_toast_layout = 0x7f030053;
 		public static final int aviary_tool_feedback_layout = 0x7f030054;
 		public static final int aviary_tool_layout = 0x7f030055;
-		public static final int support_simple_spinner_dropdown_item = 0x7f03005a;
+		public static final int support_simple_spinner_dropdown_item = 0x7f03005c;
 	}
 	public static final class raw {
 		public static final int com_aviary_effectpack_04_content = 0x7f050000;
